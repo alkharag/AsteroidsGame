@@ -5,29 +5,31 @@ private boolean keyLeft = false;
 private boolean keyRight = false;
 private float asteroidaccel = 0; 
 
-Asteroid [] afield;
+
 Star [] sfield;
 SpaceShip player;
-
+ArrayList <Asteroid> astList = new ArrayList<Asteroid>();
 public void setup() 
 {
   //your code here
   size(1000, 600);
   sfield = new Star[1000];
-  afield = new Asteroid[5];
-  for (int i =0; i < sfield.length; i ++)
+
+
+  for (int i = 0; i < sfield.length; i ++)
   {
    sfield[i] = new Star();
  }
- for (int i =0; i < afield.length; i ++)
+ 
+ for(int i = 0; i < 60; i++)
  {
-   afield[i] = new Asteroid();
-   afield[i].rotate((int)(Math.random()*360));
-   afield[i].setDirectionX(Math.random()*6-3);
-   afield[i].setDirectionY(Math.random()*6-3);
- } 
+  astList.add(new Asteroid());
+  astList.get(i).rotate((int)(Math.random()*360));
+  astList.get(i).setDirectionX(Math.random()*6-3);
+  astList.get(i).setDirectionY(Math.random()*6-3);
+}
 
- player = new SpaceShip();
+player = new SpaceShip();
 }
 public void draw() 
 {
@@ -35,25 +37,34 @@ public void draw()
   player.show();
   player.move();
 
-  if(keyUp == true){player.accelerate(.1);}
-  if(keyDown == true){player.accelerate(-.1);}
+
+  if(keyUp == true){player.accelerate();}
+  if(keyDown == true){player.accelerate();}
   if(keyRight == true){player.rotate(5);}
   if(keyLeft == true){player.rotate(-5);}
+
   
+  for(int i= 0; i< astList.size(); i++)
+  {
+    if(player.getX() <= astList.get(i).getX()+15 && player.getX() >= astList.get(i).getX()-15 && player.getY() <= astList.get(i).getY()+15 && player.getY() >= astList.get(i).getY()-15)
+    {
+      astList.remove(i);
+    }
+  }
+
 
   for (int i =0; i < sfield.length; i ++)
   {
     sfield[i].show();
   }
-  for (int i =0; i <afield.length; i ++)
+  for(int i =0; i < astList.size(); i++)
   {
-    afield[i].show();
-    afield[i].move();
-    
-    
-
+    astList.get(i).show();
+    astList.get(i).move();
   }
 }
+
+
 public void keyPressed()
 {
  if(keyCode == UP){keyUp = true;}
@@ -110,54 +121,54 @@ class SpaceShip extends Floater
       myDirectionY = 0;
       myPointDirection = 0;
 
-      shipaccel = 1;
+      shipaccel = 0.1;
     }
 //INCOMPLETE
-    public void accelerate()
-    {
-      if(myDirectionX < 2 && myDirectionY < 2 && myDirectionX > -2 && myDirectionY > -2)
-      {
-        super.accelerate(shipaccel);
-      }
-      
-      if(myDirectionX == 2)
-      {
-        super.accelerate(-1);
-        myDirectionX = 1;
-      }
-      else if(myDirectionX == -2)
-      {
-        super.accelerate(-1);
-        myDirectionX = -1;
-      }
-      if(myDirectionY == 2)
-      {
-        super.accelerate(-1);
-        myDirectionY = 1;  
-      }
-      else if(myDirectionY == -2)
-      {
-        super.accelerate(-1);
-        myDirectionY = -1;
-      }
-    }
-
-    
-    public void setX(int x){myCenterX = x;}  
-    public int getX(){return ((int)myCenterX);}   
-
-    public void setY(int y){myCenterY = y;}  
-    public int getY(){return ((int)myCenterY);}
-
-    public void setDirectionX(double x){myDirectionX = x;}   
-    public double getDirectionX(){return myDirectionX;}  
-
-    public void setDirectionY(double y){myDirectionY = y;}   
-    public double getDirectionY(){return myDirectionY;}  
-
-    public void setPointDirection(int degrees){myPointDirection = degrees;}   
-    public double getPointDirection(){return myPointDirection;} 
+public void accelerate()
+{
+  if(myDirectionX < 5 && myDirectionY < 5 && myDirectionX > -5 && myDirectionY > -5)
+  {
+    super.accelerate(shipaccel);
   }
+
+  if(myDirectionX >= 5)
+  {
+    super.accelerate(0);
+    myDirectionX = 4.9;
+  }
+  else if(myDirectionX <= -5)
+  {
+    super.accelerate(0);
+    myDirectionX = -4.9;
+  }
+  if(myDirectionY >= 5)
+  {
+    super.accelerate(0);
+    myDirectionY = 4.9;  
+  }
+  else if(myDirectionY <= -5)
+  {
+    super.accelerate(0);
+    myDirectionY = -4.9;
+  }
+}
+
+
+public void setX(int x){myCenterX = x;}  
+public int getX(){return ((int)myCenterX);}   
+
+public void setY(int y){myCenterY = y;}  
+public int getY(){return ((int)myCenterY);}
+
+public void setDirectionX(double x){myDirectionX = x;}   
+public double getDirectionX(){return myDirectionX;}  
+
+public void setDirectionY(double y){myDirectionY = y;}   
+public double getDirectionY(){return myDirectionY;}  
+
+public void setPointDirection(int degrees){myPointDirection = degrees;}   
+public double getPointDirection(){return myPointDirection;} 
+}
 
 
   //INCOMPLETE 
