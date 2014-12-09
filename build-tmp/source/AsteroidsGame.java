@@ -19,16 +19,18 @@ private boolean keyUp = false;
 private boolean keyDown = false;
 private boolean keyLeft = false;
 private boolean keyRight = false;
+private boolean keySpace = false;
 private float asteroidaccel = 0; 
-
+private int count = 0;
 
 Star [] sfield;
 SpaceShip player;
 ArrayList <Asteroid> astList = new ArrayList<Asteroid>();
+ArrayList <Bullet> shoot = new ArrayList<Bullet>();
 public void setup() 
 {
   //your code here
-  size(1000, 600);
+  size(1000,600);
   sfield = new Star[1000];
 
 
@@ -37,7 +39,7 @@ public void setup()
    sfield[i] = new Star();
  }
  
- for(int i = 0; i < 60; i++)
+ for(int i = 0; i < 6; i++)
  {
   astList.add(new Asteroid());
   astList.get(i).rotate((int)(Math.random()*360));
@@ -52,22 +54,42 @@ public void draw()
   background(0);
   player.show();
   player.move();
-
-
+  //player controls
   if(keyUp == true){player.accelerate();}
   if(keyDown == true){player.accelerate();}
   if(keyRight == true){player.rotate(5);}
   if(keyLeft == true){player.rotate(-5);}
-
-  
-  for(int i= 0; i< astList.size(); i++)
+  //if u press spacebar u create bullet
+  if(keySpace == true)
   {
-    if(player.getX() <= astList.get(i).getX()+15 && player.getX() >= astList.get(i).getX()-15 && player.getY() <= astList.get(i).getY()+15 && player.getY() >= astList.get(i).getY()-15)
+    shoot.add(new Bullet(player));
+    count++;
+  }
+  //draws bullet/move/removes
+  for(int i = 0; i< shoot.size(); i++)
+  {
+    shoot.get(i).show();
+    shoot.get(i).move();
+
+    for(int j= 0; j< astList.size(); j++)
     {
-      astList.remove(i);
+
+      if(dist(shoot.get(i).getX(),shoot.get(i).getY(), astList.get(j).getX(), astList.get(j).getY()) < 15)
+      {
+        shoot.remove(i);
+        astList.remove(j);
+        break;
+      }
+
     }
   }
-
+  for(int i = 0; i< shoot.size(); i++)
+  {
+    if(shoot.get(i).getX()>=width||shoot.get(i).getX()<=0||shoot.get(i).getY()>=height||shoot.get(i).getY()<=0)
+    {
+      shoot.remove(i);
+    }
+  }
 
   for (int i =0; i < sfield.length; i ++)
   {
@@ -80,13 +102,13 @@ public void draw()
   }
 }
 
-
 public void keyPressed()
 {
  if(keyCode == UP){keyUp = true;}
  if(keyCode == DOWN){keyDown = true;}
  if(keyCode == RIGHT){keyRight = true;}
  if(keyCode == LEFT){keyLeft = true;}
+ if(key == 32){keySpace = true;}
  if(key == 'h')
  {
   player.setX((int)(Math.random()*width));
@@ -102,7 +124,7 @@ public void keyReleased()
   if(keyCode == DOWN){keyDown = false;}
   if(keyCode == RIGHT){keyRight = false;}
   if(keyCode == LEFT){keyLeft = false;}
-  
+  if(key == 32){keySpace = false;}
 }
 
 
@@ -219,6 +241,47 @@ public double getPointDirection(){return myPointDirection;}
       myDirectionY = 0;
       myPointDirection = 0;
 
+    }
+
+    public void setX(int x){myCenterX = x;}  
+    public int getX(){return ((int)myCenterX);}   
+
+    public void setY(int y){myCenterY = y;}  
+    public int getY(){return ((int)myCenterY);}
+
+    public void setDirectionX(double x){myDirectionX = x;}   
+    public double getDirectionX(){return myDirectionX;}  
+
+    public void setDirectionY(double y){myDirectionY = y;}   
+    public double getDirectionY(){return myDirectionY;}  
+
+    public void setPointDirection(int degrees){myPointDirection = degrees;}   
+    public double getPointDirection(){return myPointDirection;} 
+  }
+
+  class Bullet extends Floater
+  {
+    Bullet(SpaceShip sp)
+    {
+      myColor = 255;
+
+      myCenterX = sp.getX();
+      myCenterY = sp.getY();
+
+      myPointDirection = sp.getPointDirection();
+      double dRadians = myPointDirection*Math.PI/180;
+
+      myDirectionX = 5 * Math.cos(dRadians) + sp.getDirectionX();
+      myDirectionY = 5 * Math.sin(dRadians) + sp.getDirectionY();
+      
+    }
+    public void show()
+    {
+      {
+        fill(255);  
+      }
+      
+      ellipse((float)myCenterX,(float)myCenterY,7,7);
     }
 
     public void setX(int x){myCenterX = x;}  
