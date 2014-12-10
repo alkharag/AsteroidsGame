@@ -66,7 +66,7 @@ public void draw()
   {
     shoot.add(new Bullet(player));
     count++;
-    //keySpace = false;
+    keySpace = false;
   }
   //draws bullet/move
   for (int i = 0; i< shoot.size(); i++)
