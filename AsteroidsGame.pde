@@ -50,10 +50,10 @@ public void draw()
   }
   //player controls
   if (keyUp == true) {
-    player.accelerate();
+    player.accelerate(0.1);
   }
   if (keyDown == true) {
-    player.accelerate();
+    player.accelerate(-0.1);
   }
   if (keyRight == true) {
     player.rotate(5);
